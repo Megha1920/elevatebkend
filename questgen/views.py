@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .prep import *
+# from .prep import *
 from . import your_script_file
 from . import multipleqa
 from .subjective import SubjectiveTest
-from sklearn.linear_model import LinearRegression
+# from sklearn.linear_model import LinearRegression
 import numpy as np
 # from transformers import pipeline
 from rest_framework import status
@@ -25,26 +25,26 @@ def test_generate(request):
         return Response(response_data)
     
     
-@api_view(['POST'])
-def mcq(request):
-    if request.method == 'POST':
-        input_text = request.data.get('text', '')
+# @api_view(['POST'])
+# def mcq(request):
+#     if request.method == 'POST':
+#         input_text = request.data.get('text', '')
         
-        # Generate questions from input text
-        text_object = Text(input_text)
-        questions = text_object.generate_questions()
+#         # Generate questions from input text
+#         text_object = Text(input_text)
+#         questions = text_object.generate_questions()
         
-        # Serialize questions
-        serialized_questions = []
-        for question in questions:
-            serialized_question = {
-                'question': question.question,
-                'answer': question.ans,
-                'options': question.options
-            }
-            serialized_questions.append(serialized_question)
+#         # Serialize questions
+#         serialized_questions = []
+#         for question in questions:
+#             serialized_question = {
+#                 'question': question.question,
+#                 'answer': question.ans,
+#                 'options': question.options
+#             }
+#             serialized_questions.append(serialized_question)
         
-        return Response({'questions': serialized_questions})
+#         return Response({'questions': serialized_questions})
 
 @api_view(['POST'])
 def generate_longanswer_questions(request):
@@ -81,39 +81,39 @@ def generate_mcqquestions(request):
     
     
 
-@api_view(['POST'])
-def predict_score_view(request):
-    if request.method == 'POST':
-        # Extract scores from request data
-        scores = request.data.get('scores', [])
+# @api_view(['POST'])
+# def predict_score_view(request):
+#     if request.method == 'POST':
+#         # Extract scores from request data
+#         scores = request.data.get('scores', [])
 
-        # Ensure that scores for exactly 7 exams are provided
-        if len(scores) != 7:
-            return Response({'error': 'Please provide scores for exactly 7 exams'}, status=400)
+#         # Ensure that scores for exactly 7 exams are provided
+#         if len(scores) != 7:
+#             return Response({'error': 'Please provide scores for exactly 7 exams'}, status=400)
 
-        # Reshape scores into numpy array for regression
-        X_train = np.array(range(1, 8)).reshape(-1, 1)  # Previous 7 exams as X values
-        y_train = np.array(scores).reshape(-1, 1)  # Corresponding scores as y values
+#         # Reshape scores into numpy array for regression
+#         X_train = np.array(range(1, 8)).reshape(-1, 1)  # Previous 7 exams as X values
+#         y_train = np.array(scores).reshape(-1, 1)  # Corresponding scores as y values
 
-        # Fit linear regression model
-        model = LinearRegression()
-        model.fit(X_train, y_train)
+#         # Fit linear regression model
+#         model = LinearRegression()
+#         model.fit(X_train, y_train)
 
-        # Predict scores for upcoming exams (next 3 exams)
-        X_test = np.array(range(8, 11)).reshape(-1, 1)  # Next 3 exams
-        predicted_scores = model.predict(X_test)
+#         # Predict scores for upcoming exams (next 3 exams)
+#         X_test = np.array(range(8, 11)).reshape(-1, 1)  # Next 3 exams
+#         predicted_scores = model.predict(X_test)
 
-        # Prepare data for graph construction
-        exam_numbers = list(range(1, 11))  # Exam numbers from 1 to 10 (7 previous + 3 upcoming)
-        exam_scores = list(scores) + list(predicted_scores.flatten())
+#         # Prepare data for graph construction
+#         exam_numbers = list(range(1, 11))  # Exam numbers from 1 to 10 (7 previous + 3 upcoming)
+#         exam_scores = list(scores) + list(predicted_scores.flatten())
 
-        # Construct response data
-        response_data = {
-            'exam_numbers': exam_numbers,
-            'exam_scores': exam_scores
-        }
+#         # Construct response data
+#         response_data = {
+#             'exam_numbers': exam_numbers,
+#             'exam_scores': exam_scores
+#         }
 
-        return Response(response_data)
+#         return Response(response_data)
     
     
 
