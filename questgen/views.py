@@ -5,7 +5,7 @@ from .prep import *
 from . import your_script_file
 from . import multipleqa
 from .subjective import SubjectiveTest
-# from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression
 import numpy as np
 # from transformers import pipeline
 from rest_framework import status
@@ -81,39 +81,39 @@ def generate_mcqquestions(request):
     
     
 
-# @api_view(['POST'])
-# def predict_score_view(request):
-#     if request.method == 'POST':
-#         # Extract scores from request data
-#         scores = request.data.get('scores', [])
+@api_view(['POST'])
+def predict_score_view(request):
+    if request.method == 'POST':
+        # Extract scores from request data
+        scores = request.data.get('scores', [])
 
-#         # Ensure that scores for exactly 7 exams are provided
-#         if len(scores) != 7:
-#             return Response({'error': 'Please provide scores for exactly 7 exams'}, status=400)
+        # Ensure that scores for exactly 7 exams are provided
+        if len(scores) != 7:
+            return Response({'error': 'Please provide scores for exactly 7 exams'}, status=400)
 
-#         # Reshape scores into numpy array for regression
-#         X_train = np.array(range(1, 8)).reshape(-1, 1)  # Previous 7 exams as X values
-#         y_train = np.array(scores).reshape(-1, 1)  # Corresponding scores as y values
+        # Reshape scores into numpy array for regression
+        X_train = np.array(range(1, 8)).reshape(-1, 1)  # Previous 7 exams as X values
+        y_train = np.array(scores).reshape(-1, 1)  # Corresponding scores as y values
 
-#         # Fit linear regression model
-#         model = LinearRegression()
-#         model.fit(X_train, y_train)
+        # Fit linear regression model
+        model = LinearRegression()
+        model.fit(X_train, y_train)
 
-#         # Predict scores for upcoming exams (next 3 exams)
-#         X_test = np.array(range(8, 11)).reshape(-1, 1)  # Next 3 exams
-#         predicted_scores = model.predict(X_test)
+        # Predict scores for upcoming exams (next 3 exams)
+        X_test = np.array(range(8, 11)).reshape(-1, 1)  # Next 3 exams
+        predicted_scores = model.predict(X_test)
 
-#         # Prepare data for graph construction
-#         exam_numbers = list(range(1, 11))  # Exam numbers from 1 to 10 (7 previous + 3 upcoming)
-#         exam_scores = list(scores) + list(predicted_scores.flatten())
+        # Prepare data for graph construction
+        exam_numbers = list(range(1, 11))  # Exam numbers from 1 to 10 (7 previous + 3 upcoming)
+        exam_scores = list(scores) + list(predicted_scores.flatten())
 
-#         # Construct response data
-#         response_data = {
-#             'exam_numbers': exam_numbers,
-#             'exam_scores': exam_scores
-#         }
+        # Construct response data
+        response_data = {
+            'exam_numbers': exam_numbers,
+            'exam_scores': exam_scores
+        }
 
-#         return Response(response_data)
+        return Response(response_data)
     
     
 
