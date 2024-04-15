@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-# from .prep import *
+# pip instakfrom .prep import *
 from . import your_script_file
 from . import multipleqa
 from .subjective import SubjectiveTest
@@ -25,26 +25,6 @@ def test_generate(request):
         return Response(response_data)
     
     
-# @api_view(['POST'])
-# def mcq(request):
-#     if request.method == 'POST':
-#         input_text = request.data.get('text', '')
-        
-#         # Generate questions from input text
-#         text_object = Text(input_text)
-#         questions = text_object.generate_questions()
-        
-#         # Serialize questions
-#         serialized_questions = []
-#         for question in questions:
-#             serialized_question = {
-#                 'question': question.question,
-#                 'answer': question.ans,
-#                 'options': question.options
-#             }
-#             serialized_questions.append(serialized_question)
-        
-#         return Response({'questions': serialized_questions})
 
 @api_view(['POST'])
 def generate_longanswer_questions(request):
