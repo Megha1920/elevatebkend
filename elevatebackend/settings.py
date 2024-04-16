@@ -140,3 +140,14 @@ CORS_ALLOW_METHODS = ['*']
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    # ...
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',  # Change the logging level here
+            'propagate': True,
+        },
+    },
+}

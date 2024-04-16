@@ -59,23 +59,31 @@ def generate_longanswer_questions(request):
         logging.error("An error occurred: %s", str(e))
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+logger = logging.getLogger('views')
+
 @api_view(['POST'])
 def generate_mcqquestions(request):
     try:
+        logger.info(f"Request data: {request.data}")
         context_data = request.data.get('context')  
-        no_of_ques = int(request.data.get('noq', ''))# Assuming the context is sent as 'context' in the request body
+        no_of_ques = int(request.data.get('noq', ''))
         if not context_data:
-            return Response({"error": "Context data is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Assuming the context data is already in JSON format, no need for additional parsing
-        # Call your function from the script file with the context data
-        questions = multipleqa.generate_questions(context_data,no_of_ques)
+            error_msg = "Context data is required"
+            logger.error(error_msg)
+            return Response({"error": error_msg}, status=status.HTTP_400_BAD_REQUEST)
+        questions = multipleqa.generate_questions(context_data, no_of_ques)
         
-        return JsonResponse(questions, status=status.HTTP_200_OK)
+        if not questions:
+            error_msg = "Failed to generate questions"
+            logger.error(error_msg)
+            return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(questions, status=status.HTTP_200_OK)
+
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    
+        error_msg = f"An error occurred: {str(e)}"
+        logger.exception(error_msg)
+        return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 # @api_view(['POST'])
