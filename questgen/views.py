@@ -1,3 +1,5 @@
+import logging
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -29,17 +31,32 @@ def test_generate(request):
 @api_view(['POST'])
 def generate_longanswer_questions(request):
     try:
+        logging.debug("Received request to generate long answer questions")
+        
+        # Log request data
+        logging.debug("Request data: %s", request.data)
+        
         context_data = request.data.get('context')  
-        no_of_ques = int(request.data.get('noq', ''))# Assuming the context is sent as 'context' in the request body
+        no_of_ques = int(request.data.get('noq', ''))
+        
         if not context_data:
+            logging.error("Context data is required")
             return Response({"error": "Context data is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Assuming the context data is already in JSON format, no need for additional parsing
-        # Call your function from the script file with the context data
-        questions = your_script_file.generate_questions(context_data,no_of_ques)
-        
+        # Log context data
+        logging.debug("Context data: %s", context_data)
+        logging.debug("Number of questions: %s", no_of_ques)
+
+        # Call your function to generate questions
+        questions = your_script_file.generate_questions(context_data, no_of_ques)
+
+        # Log generated questions
+        logging.debug("Generated questions: %s", questions)
+
         return Response(questions, status=status.HTTP_200_OK)
     except Exception as e:
+        # Log any exceptions
+        logging.error("An error occurred: %s", str(e))
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
@@ -54,7 +71,7 @@ def generate_mcqquestions(request):
         # Call your function from the script file with the context data
         questions = multipleqa.generate_questions(context_data,no_of_ques)
         
-        return Response(questions, status=status.HTTP_200_OK)
+        return JsonResponse(questions, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
