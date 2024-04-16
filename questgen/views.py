@@ -65,12 +65,14 @@ logger = logging.getLogger('views')
 def generate_mcqquestions(request):
     try:
         logger.info(f"Request data: {request.data}")
-        context_data = request.data.get('context')  
+        context_data = request.data.get('context')
         no_of_ques = int(request.data.get('noq', ''))
+        
         if not context_data:
             error_msg = "Context data is required"
             logger.error(error_msg)
             return Response({"error": error_msg}, status=status.HTTP_400_BAD_REQUEST)
+
         questions = multipleqa.generate_questions(context_data, no_of_ques)
         
         if not questions:
@@ -80,11 +82,15 @@ def generate_mcqquestions(request):
 
         return Response(questions, status=status.HTTP_200_OK)
 
+    except ValueError as ve:
+        error_msg = f"Invalid number of questions: {str(ve)}"
+        logger.error(error_msg)
+        return Response({"error": error_msg}, status=status.HTTP_400_BAD_REQUEST)
+
     except Exception as e:
         error_msg = f"An error occurred: {str(e)}"
         logger.exception(error_msg)
         return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
 
 # @api_view(['POST'])
 # def predict_score_view(request):
